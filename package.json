@@ -7,7 +7,7 @@
   },
   "publisher": "ShimantaKrishnaBhuyan",
   "description": "Tweet or share to LinkedIn everytime you commit to your repo, build social proof",
-  "version": "1.2",
+  "version": "1.2.0",
   "engines": {
     "vscode": "^1.89.0"
   },
