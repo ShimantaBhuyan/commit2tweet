@@ -7,7 +7,7 @@ const https = require("https");
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-  console.log('Congratulations, your extension "commit2tweet" is now active!');
+  console.log('Congratulations, your extension "commit2share" is now active!');
 
   let twitterShareDisposable = vscode.commands.registerCommand(
     "commit2tweet.tweetCommitDiff",

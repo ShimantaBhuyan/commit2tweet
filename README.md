@@ -12,7 +12,7 @@ Run locally with Ollama!
 
 ## Get it in the VSCode Extension Marketplace
 
-Search for "Commit2Tweet" in the VSCode Extension Marketplace
+Search for "Commit2Share" or "Commit2Tweet" in the VSCode Extension Marketplace
 
 Or go here: https://marketplace.visualstudio.com/items?itemName=ShimantaKrishnaBhuyan.commit2tweet
 
@@ -31,7 +31,7 @@ Or go here: https://marketplace.visualstudio.com/items?itemName=ShimantaKrishnaB
 
 ## How to Use
 
-The Commit2Tweet extension allows you to easily share your latest commit changes on Twitter or LinkedIn directly from VS Code. Here's how to use it:
+The Commit2Share extension allows you to easily share your latest commit changes on Twitter or LinkedIn directly from VS Code. Here's how to use it:
 
 ### Sharing to Twitter
 
@@ -70,11 +70,3 @@ To access these settings, go to File > Preferences > Settings and search for "co
 ## Known Issues
 
 Currently, there are no known issues with this extension.
-
-## Release Notes
-
-### 1.0.0
-
-Initial release of commit2tweet.
-
----
