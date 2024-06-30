@@ -84,7 +84,7 @@
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "vscode-test",
-    "deploy": "vsce publish"
+    "deploy": "vsce publish minor"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.7",
