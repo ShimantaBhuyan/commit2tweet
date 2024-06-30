@@ -1,0 +1,92 @@
+{
+  "name": "commit2tweet",
+  "displayName": "Commit2Tweet",
+  "author": {
+    "name": "Shimanta Krishna Bhuyan",
+    "url": "https://x.com/AllDevThings"
+  },
+  "description": "Tweet everytime you commit to your repo, build social proof",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.89.0"
+  },
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#C295F9",
+    "theme": "dark"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "keywords": [
+    "Development Tools",
+    "AI",
+    "Ollama",
+    "OpenAI",
+    "Tweet"
+  ],
+  "pricing": "Free",
+  "activationEvents": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShimantaBhuyan/commit2tweet.git"
+  },
+  "homepage": "https://github.com/ShimantaBhuyan/commit2tweet/blob/main/README.md",
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "commit2tweet.tweetCommitDiff",
+        "title": "Tweet Commit Diff"
+      }
+    ],
+    "configuration": {
+      "title": "Commit2Tweet",
+      "properties": {
+        "commit2tweet.endpoint": {
+          "type": "string",
+          "default": "http://localhost:11434/api/chat",
+          "description": "Endpoint for generating tweet text"
+        },
+        "commit2tweet.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Optional API key for the endpoint"
+        },
+        "commit2tweet.model": {
+          "type": "string",
+          "default": "llama3",
+          "description": "Model to use for generating tweets"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "commit2tweet.tweetCommitDiff",
+        "key": "ctrl+alt+l",
+        "mac": "cmd+ctrl+l"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0",
+    "@vscode/vsce": "^2.29.0",
+    "eslint": "^8.57.0",
+    "glob": "^7.1.7",
+    "mocha": "^8.4.0",
+    "proxyquire": "^2.1.3",
+    "sinon": "^11.1.1",
+    "typescript": "^5.4.5"
+  }
+}
