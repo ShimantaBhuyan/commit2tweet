@@ -1,13 +1,13 @@
 {
   "name": "commit2tweet",
-  "displayName": "Commit2Tweet",
+  "displayName": "Commit2Share",
   "author": {
     "name": "Shimanta Krishna Bhuyan",
     "url": "https://x.com/AllDevThings"
   },
   "publisher": "ShimantaKrishnaBhuyan",
-  "description": "Tweet everytime you commit to your repo, build social proof",
-  "version": "1.1.0",
+  "description": "Tweet or share to LinkedIn everytime you commit to your repo, build social proof",
+  "version": "1.1.1",
   "engines": {
     "vscode": "^1.89.0"
   },
@@ -48,7 +48,7 @@
       }
     ],
     "configuration": {
-      "title": "Commit2Tweet",
+      "title": "Commit2Share",
       "properties": {
         "commit2tweet.endpoint": {
           "type": "string",

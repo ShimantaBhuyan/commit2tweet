@@ -4,6 +4,8 @@ This extension allows you to share a Tweet or a LinkedIn post from your latest G
 
 Run locally with Ollama!
 
+![image](https://github.com/ShimantaBhuyan/commit2tweet/assets/32566682/9a7d1bc4-28d6-431a-b832-c30a45da7889)
+
 ## Get it in the VSCode Extension Marketplace
 
 Search for "Commit2Tweet" in the VSCode Extension Marketplace
@@ -21,7 +23,6 @@ Or go here: https://marketplace.visualstudio.com/items?itemName=ShimantaKrishnaB
 
 - Git installed and configured on your local machine
 - (OPTIONAL) An API key for the LLM service (OpenAI compatible api)
-- Visual Studio Code extension API version 1.63.0 or higher
 - Login to X/Twitter and Linkedin in your default browser for seamless sharing
 
 ## How to Use
@@ -52,13 +53,13 @@ After triggering either command, the extension will:
 
 Note: Make sure you're logged into your Twitter or LinkedIn account in your default browser for a seamless sharing experience.
 
-### Customization
+### Settings
 
-You can customize the extension's behavior by modifying the following settings in your VS Code settings:
+You can customize the extension's behavior by modifying the following in your VS Code settings:
 
-- `commit2tweet.endpoint`: The API endpoint for the LLM (default: `http://localhost:11434/api/chat`)
+- `commit2tweet.endpoint`: [REQUIRED] The API endpoint for the LLM (default: `http://localhost:11434/api/chat`)
 - `commit2tweet.apiKey`: API key to use for authentication (default: `null`)
-- `commit2tweet.model`: The model to use for generating the tweet (default: `llama3`)
+- `commit2tweet.model`: [REQUIRED] The model to use for generating the tweet (default: `llama3`)
 
 To access these settings, go to File > Preferences > Settings and search for "commit2tweet".
 
