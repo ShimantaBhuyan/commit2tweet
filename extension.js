@@ -9,41 +9,19 @@ const https = require("https");
 function activate(context) {
   console.log('Congratulations, your extension "commit2tweet" is now active!');
 
-  let disposable = vscode.commands.registerCommand(
+  let twitterShareDisposable = vscode.commands.registerCommand(
     "commit2tweet.tweetCommitDiff",
     async function () {
       vscode.window.showInformationMessage(
         "Analysing your commit and preparing the tweet..."
       );
       try {
-        const workspaceFolders = vscode.workspace.workspaceFolders;
-        let gitPath = null;
-
-        if (Array.isArray(workspaceFolders) && workspaceFolders.length > 0) {
-          gitPath = workspaceFolders[0].uri.fsPath;
-        } else {
-          throw new Error("No workspace folder found");
-        }
-
-        // Get the diff of the last commit
-        const diff = await getLastCommitDiff(gitPath);
-
-        // Get the configured endpoint and API key
-        const config = vscode.workspace.getConfiguration("commit2tweet");
-        const endpoint = config.get("endpoint");
-        const apiKey = config.get("apiKey");
-        const model = config.get("model");
-
-        if (!endpoint) {
-          throw new Error("Endpoint not configured");
-        }
-
         // Send diff to the configured endpoint
-        const tweetText = await getTweetText(diff, endpoint, apiKey, model);
+        const shareText = await shareToTwitter();
 
         // Encode the tweet text for URL
         const encodedTweetURL = encodeURI(
-          `http://twitter.com/share?text=${tweetText}`
+          `http://twitter.com/share?text=${shareText}`
         );
 
         // Open Twitter with the pre-filled tweet
@@ -58,7 +36,99 @@ function activate(context) {
     }
   );
 
-  context.subscriptions.push(disposable);
+  let linkedinShareDisposable = vscode.commands.registerCommand(
+    "commit2tweet.linkedinCommitDiff",
+    async function () {
+      vscode.window.showInformationMessage(
+        "Analysing your commit and preparing the linkedin post..."
+      );
+      try {
+        // Send diff to the configured endpoint
+        const shareText = await shareToLinkedin();
+
+        // Encode the linkedin post for URL
+        const encodedLinkedinURL = encodeURI(
+          `https://www.linkedin.com/feed/?shareActive=true&text=${shareText}`
+        );
+
+        // Open LinkedIn with the pre-filled post
+        vscode.env.openExternal(vscode.Uri.parse(encodedLinkedinURL));
+
+        vscode.window.showInformationMessage(
+          "LinkedIn post prepared and ready to post!"
+        );
+      } catch (error) {
+        vscode.window.showErrorMessage(`Error: ${error.message}`);
+      }
+    }
+  );
+
+  context.subscriptions.push(twitterShareDisposable);
+  context.subscriptions.push(linkedinShareDisposable);
+}
+
+async function shareToTwitter() {
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  let gitPath = null;
+
+  if (Array.isArray(workspaceFolders) && workspaceFolders.length > 0) {
+    gitPath = workspaceFolders[0].uri.fsPath;
+  } else {
+    throw new Error("No workspace folder found");
+  }
+
+  // Get the diff of the last commit
+  const diff = await getLastCommitDiff(gitPath);
+
+  // Get the configured endpoint and API key
+  const config = vscode.workspace.getConfiguration("commit2tweet");
+  const endpoint = config.get("endpoint");
+  const apiKey = config.get("apiKey");
+  const model = config.get("model");
+
+  if (!endpoint) {
+    throw new Error("Endpoint not configured");
+  }
+
+  // Send diff to the configured endpoint
+  const shareText = await getShareText(diff, endpoint, apiKey, model);
+
+  return shareText;
+}
+
+async function shareToLinkedin() {
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  let gitPath = null;
+
+  if (Array.isArray(workspaceFolders) && workspaceFolders.length > 0) {
+    gitPath = workspaceFolders[0].uri.fsPath;
+  } else {
+    throw new Error("No workspace folder found");
+  }
+
+  // Get the diff of the last commit
+  const diff = await getLastCommitDiff(gitPath);
+
+  // Get the configured endpoint and API key
+  const config = vscode.workspace.getConfiguration("commit2tweet");
+  const endpoint = config.get("endpoint");
+  const apiKey = config.get("apiKey");
+  const model = config.get("model");
+
+  if (!endpoint) {
+    throw new Error("Endpoint not configured");
+  }
+
+  // Send diff to the configured endpoint
+  const shareText = await getShareText(
+    diff,
+    endpoint,
+    apiKey,
+    model,
+    "linkedin"
+  );
+
+  return shareText;
 }
 
 function getLastCommitDiff(gitPath) {
@@ -77,54 +147,21 @@ function getLastCommitDiff(gitPath) {
   });
 }
 
-// function getTweetText(diff, endpoint, apiKey) {
-//   return new Promise((resolve, reject) => {
-//     const url = new URL(endpoint);
-//     const options = {
-//       hostname: url.hostname,
-//       port: 443,
-//       path: url.pathname,
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     };
+function getTweetPrompt(diff) {
+  return `You are a senior developer building side projects. 
+  For showcasing your side projects to the world, you have decided to tweet what you are building every time you commit and push your code. 
+  Summarise the following git diff and generate a banger tweet about it:\n\n${diff}. 
+  RESPOND WITH THE TEXT FOR THE TWEET ONLY AND DO NOT USE ANY HASHTAGS.`;
+}
 
-//     if (apiKey) {
-//       options.headers["Authorization"] = `Bearer ${apiKey}`;
-//     }
+function getLinkedinPrompt(diff) {
+  return `You are a senior developer building side projects. 
+  For showcasing your side projects to the world, you have decided to share to LinkedIn what you are building every time you commit and push your code. 
+  Summarise the following git diff and generate a banger LinkedIn post about it:\n\n${diff}. 
+  RESPOND WITH THE TEXT FOR THE LINKEDIN POST ONLY AND DO NOT USE ANY HASHTAGS.`;
+}
 
-//     const req = http.request(options, (res) => {
-//       let data = "";
-
-//       res.on("data", (chunk) => {
-//         data += chunk;
-//       });
-
-//       res.on("end", () => {
-//         if (res.statusCode >= 200 && res.statusCode < 300) {
-//           try {
-//             const parsedData = JSON.parse(data);
-//             resolve(parsedData.tweet);
-//           } catch (error) {
-//             reject(new Error("Failed to parse response"));
-//           }
-//         } else {
-//           reject(new Error(`HTTP error! status: ${res.statusCode}`));
-//         }
-//       });
-//     });
-
-//     req.on("error", (error) => {
-//       reject(new Error(`Failed to get tweet text: ${error.message}`));
-//     });
-
-//     req.write(JSON.stringify({ diff }));
-//     req.end();
-//   });
-// }
-
-function getTweetText(diff, endpoint, apiKey, model) {
+function getShareText(diff, endpoint, apiKey, model, shareTo = "twitter") {
   return new Promise((resolve, reject) => {
     const url = new URL(endpoint);
     const options = {
@@ -188,10 +225,9 @@ function getTweetText(diff, endpoint, apiKey, model) {
       reject(new Error(`Failed to get tweet text: ${error.message}`));
     });
 
-    const promptText = `You are a senior developer building side projects. 
-	    For showcasing your side projects to the world, you have decided to tweet what you are building every time you commit and push your code. 
-	    Summarise the following git diff and generate a tweet about it:\n\n${diff}. 
-      RESPOND WITH THE TEXT FOR THE TWEET ONLY AND DO NOT USE ANY HASHTAGS.`;
+    const promptText =
+      shareTo == "twitter" ? getTweetPrompt(diff) : getLinkedinPrompt(diff);
+
     const requestBody = JSON.stringify({
       model: model,
       messages: [

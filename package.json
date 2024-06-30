@@ -41,6 +41,10 @@
       {
         "command": "commit2tweet.tweetCommitDiff",
         "title": "Tweet Commit Diff"
+      },
+      {
+        "command": "commit2tweet.linkedinCommitDiff",
+        "title": "Share Commit Diff to LinkedIn"
       }
     ],
     "configuration": {
@@ -68,6 +72,11 @@
         "command": "commit2tweet.tweetCommitDiff",
         "key": "ctrl+alt+l",
         "mac": "cmd+ctrl+l"
+      },
+      {
+        "command": "commit2tweet.linkedinCommitDiff",
+        "key": "ctrl+alt+k",
+        "mac": "cmd+ctrl+k"
       }
     ]
   },

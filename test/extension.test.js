@@ -50,14 +50,19 @@ suite("Extension Test Suite", () => {
     assert.ok(extension);
   });
 
-  test("Should register command", () => {
+  test("Should register commands", () => {
     const context = { subscriptions: [] };
     extension.activate(context);
-    assert.strictEqual(context.subscriptions.length, 1);
-    assert(mockVscode.commands.registerCommand.calledOnce);
+    assert.strictEqual(context.subscriptions.length, 2);
+    assert(mockVscode.commands.registerCommand.calledTwice);
     assert(
       mockVscode.commands.registerCommand.calledWith(
         "commit2tweet.tweetCommitDiff"
+      )
+    );
+    assert(
+      mockVscode.commands.registerCommand.calledWith(
+        "commit2tweet.linkedinCommitDiff"
       )
     );
   });
@@ -70,9 +75,9 @@ suite("Extension Test Suite", () => {
 
     const context = { subscriptions: [] };
     extension.activate(context);
-    const command = mockVscode.commands.registerCommand.args[0][1];
+    const twitterCommand = mockVscode.commands.registerCommand.args[0][1];
 
-    await command();
+    await twitterCommand();
 
     assert(mockChildProcess.exec.calledOnce);
     assert(
@@ -82,10 +87,11 @@ suite("Extension Test Suite", () => {
     );
   });
 
-  test("Should call API endpoint and open browser", async () => {
+  test("Should call API endpoint and open browser for Twitter", async () => {
     const fakeDiff = "test diff";
     const fakeEndpoint = "https://api.example.com/tweet";
     const fakeApiKey = "testApiKey";
+    const fakeModel = "gpt-3.5-turbo";
     const fakeTweet = "Generated tweet text";
 
     mockChildProcess.exec.callsFake((command, options, callback) => {
@@ -100,6 +106,10 @@ suite("Extension Test Suite", () => {
       .getConfiguration()
       .get.withArgs("apiKey")
       .returns(fakeApiKey);
+    mockVscode.workspace
+      .getConfiguration()
+      .get.withArgs("model")
+      .returns(fakeModel);
 
     const fakeRequest = {
       on: sinon.stub(),
@@ -118,7 +128,9 @@ suite("Extension Test Suite", () => {
     });
 
     fakeResponse.on.withArgs("data").callsFake((event, callback) => {
-      callback(JSON.stringify({ tweet: fakeTweet }));
+      callback(
+        JSON.stringify({ choices: [{ message: { content: fakeTweet } }] })
+      );
     });
 
     fakeResponse.on.withArgs("end").callsFake((event, callback) => {
@@ -127,15 +139,80 @@ suite("Extension Test Suite", () => {
 
     const context = { subscriptions: [] };
     extension.activate(context);
-    const command = mockVscode.commands.registerCommand.args[0][1];
+    const twitterCommand = mockVscode.commands.registerCommand.args[0][1];
 
-    await command();
+    await twitterCommand();
 
     assert(mockHttps.request.calledOnce);
     assert(mockVscode.env.openExternal.calledOnce);
     assert(
       mockVscode.window.showInformationMessage.calledWith(
         "Tweet prepared and ready to post!"
+      )
+    );
+  });
+
+  test("Should call API endpoint and open browser for LinkedIn", async () => {
+    const fakeDiff = "test diff";
+    const fakeEndpoint = "https://api.example.com/post";
+    const fakeApiKey = "testApiKey";
+    const fakeModel = "gpt-3.5-turbo";
+    const fakePost = "Generated LinkedIn post content";
+
+    mockChildProcess.exec.callsFake((command, options, callback) => {
+      callback(null, fakeDiff, "");
+    });
+
+    mockVscode.workspace
+      .getConfiguration()
+      .get.withArgs("endpoint")
+      .returns(fakeEndpoint);
+    mockVscode.workspace
+      .getConfiguration()
+      .get.withArgs("apiKey")
+      .returns(fakeApiKey);
+    mockVscode.workspace
+      .getConfiguration()
+      .get.withArgs("model")
+      .returns(fakeModel);
+
+    const fakeRequest = {
+      on: sinon.stub(),
+      write: sinon.stub(),
+      end: sinon.stub(),
+    };
+
+    const fakeResponse = {
+      on: sinon.stub(),
+      statusCode: 200,
+    };
+
+    mockHttps.request.callsFake((options, callback) => {
+      callback(fakeResponse);
+      return fakeRequest;
+    });
+
+    fakeResponse.on.withArgs("data").callsFake((event, callback) => {
+      callback(
+        JSON.stringify({ choices: [{ message: { content: fakePost } }] })
+      );
+    });
+
+    fakeResponse.on.withArgs("end").callsFake((event, callback) => {
+      callback();
+    });
+
+    const context = { subscriptions: [] };
+    extension.activate(context);
+    const linkedinCommand = mockVscode.commands.registerCommand.args[1][1];
+
+    await linkedinCommand();
+
+    assert(mockHttps.request.calledOnce);
+    assert(mockVscode.env.openExternal.calledOnce);
+    assert(
+      mockVscode.window.showInformationMessage.calledWith(
+        "LinkedIn post prepared and ready to post!"
       )
     );
   });
@@ -175,9 +252,9 @@ suite("Extension Test Suite", () => {
 
     const context = { subscriptions: [] };
     extension.activate(context);
-    const command = mockVscode.commands.registerCommand.args[0][1];
+    const twitterCommand = mockVscode.commands.registerCommand.args[0][1];
 
-    await command();
+    await twitterCommand();
 
     assert(mockHttps.request.calledOnce);
     assert(mockVscode.window.showErrorMessage.calledOnce);
