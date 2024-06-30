@@ -4,6 +4,12 @@ This extension allows you to tweet your latest Git commit diffs with just one cl
 
 Run locally with Ollama!
 
+## Get it in the VSCode Extension Marketplace
+
+Search for "Commit2Tweet" in the VSCode Extension Marketplace
+
+Or go here: https://marketplace.visualstudio.com/items?itemName=ShimantaKrishnaBhuyan.commit2tweet
+
 ## Features
 
 - Tweet your latest Git commit diff with a single click
