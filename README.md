@@ -1,5 +1,7 @@
 [![.github/workflows/build-main.yml](https://github.com/ShimantaBhuyan/commit2tweet/actions/workflows/build-main.yml/badge.svg?branch=main)](https://github.com/ShimantaBhuyan/commit2tweet/actions/workflows/build-main.yml)
 
+<img src="https://raw.githubusercontent.com/ShimantaBhuyan/commit2tweet/main/images/icon.png" width="50px" />
+
 # commit2share
 
 This extension allows you to share a Tweet or a LinkedIn post from your latest Git commit diffs, with just one click. It uses LLMs to generate a tweet/linkedin post summarizing the changes in your commit.
