@@ -7,7 +7,7 @@
   },
   "publisher": "ShimantaKrishnaBhuyan",
   "description": "Tweet or share to LinkedIn everytime you commit to your repo, build social proof",
-  "version": "1.1.3",
+  "version": "1.2",
   "engines": {
     "vscode": "^1.89.0"
   },
@@ -84,7 +84,7 @@
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "vscode-test",
-    "deploy": "vsce publish minor"
+    "deploy": "vsce publish"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.7",
