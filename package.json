@@ -7,7 +7,7 @@
   },
   "publisher": "ShimantaKrishnaBhuyan",
   "description": "Tweet everytime you commit to your repo, build social proof",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.89.0"
   },
